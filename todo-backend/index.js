@@ -74,6 +74,24 @@ app.put("/todos/:id", (req, res) => {
   res.json(todo);
 });
 
+
+
+// delete
+app.delete("/todos/:id", (req, res) => {
+  const { id } = req.params;
+
+  const todoExists = todos.some((todo) => todo.id === id);
+
+  if (!todoExists) {
+    return res.status(404).json({ message: "Todo not found" });
+  }
+
+  todos = todos.filter((todo) => todo.id !== id);
+
+  res.json({ message: "Todo deleted successfully" });
+});
+
+
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
