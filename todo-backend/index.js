@@ -52,6 +52,28 @@ app.post("/todos", (req, res) => {
   res.status(201).json(newTodo);
 });
 
+
+app.put("/todos/:id", (req, res) => {
+  const { id } = req.params;
+  const { status } = req.body;
+
+  const allowedStatuses = ["not_started", "in_progress", "done"];
+
+  if (!allowedStatuses.includes(status)) {
+    return res.status(400).json({ message: "Invalid status" });
+  }
+
+  const todo = todos.find((todo) => todo.id === id);
+
+  if (!todo) {
+    return res.status(404).json({ message: "Todo not found" });
+  }
+
+  todo.status = status;
+
+  res.json(todo);
+});
+
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
