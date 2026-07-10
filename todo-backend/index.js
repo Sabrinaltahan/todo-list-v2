@@ -13,6 +13,9 @@ app.get("/", (req, res) => {
   res.json({ message: "Todo API is running" });
 });
 
+
+
+// get all todos
 app.get("/todos", (req, res) => {
   res.json(todos);
 });
@@ -52,7 +55,7 @@ app.post("/todos", (req, res) => {
   res.status(201).json(newTodo);
 });
 
-
+// update
 app.put("/todos/:id", (req, res) => {
   const { id } = req.params;
   const { status } = req.body;
