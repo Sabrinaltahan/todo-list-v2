@@ -24,10 +24,16 @@ function App() {
   async function loadTodos() {
     try {
       setLoading(true);
+      setError("");
+
       const data = await getTodos();
       setTodos(data);
-    } catch {
-      setError("Could not load todos.");
+    } catch (error) {
+      setError(
+        error instanceof Error
+          ? error.message
+          : "Could not load todos."
+      );
     } finally {
       setLoading(false);
     }
@@ -38,37 +44,77 @@ function App() {
   }, []);
 
   async function handleCreate(data: CreateTodoData) {
-    const todo = await createTodo(data);
-    setTodos((prev) => [...prev, todo]);
+    try {
+      setError("");
+
+      const todo = await createTodo(data);
+
+      setTodos((prev) => [...prev, todo]);
+    } catch (error) {
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Could not create todo.";
+
+      setError(message);
+      throw error;
+    }
   }
 
   async function handleDelete(id: string) {
-    await deleteTodo(id);
-    setTodos((prev) => prev.filter((todo) => todo.id !== id));
+    try {
+      setError("");
+
+      await deleteTodo(id);
+
+      setTodos((prev) =>
+        prev.filter((todo) => todo.id !== id)
+      );
+    } catch (error) {
+      setError(
+        error instanceof Error
+          ? error.message
+          : "Could not delete todo."
+      );
+    }
   }
 
   async function handleStatusChange(
     id: string,
     status: TodoStatus
   ) {
-    const updated = await updateTodoStatus(id, status);
+    try {
+      setError("");
 
-    setTodos((prev) =>
-      prev.map((todo) => (todo.id === id ? updated : todo))
-    );
+      const updated = await updateTodoStatus(id, status);
+
+      setTodos((prev) =>
+        prev.map((todo) =>
+          todo.id === id ? updated : todo
+        )
+      );
+    } catch (error) {
+      setError(
+        error instanceof Error
+          ? error.message
+          : "Could not update todo status."
+      );
+    }
   }
 
-if (loading) {
-  return <p className="loading-message">Loading...</p>;
-}
-
-if (error) {
-  return <p className="error-message">{error}</p>;
-}
+  if (loading) {
+    return <p className="loading-message">Loading...</p>;
+  }
 
   return (
     <main>
       <h1>Todo List</h1>
+
+      {error && (
+        <p className="error-message" role="alert">
+          {error}
+        </p>
+      )}
 
       <TodoForm onCreate={handleCreate} />
 
