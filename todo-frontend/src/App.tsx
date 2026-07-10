@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import TodoForm from "./components/TodoForm";
 import TodoList from "./components/TodoList";
+import "./styles/App.css";
 
 import {
   getTodos,
@@ -57,9 +58,13 @@ function App() {
     );
   }
 
-  if (loading) return <p>Loading...</p>;
+if (loading) {
+  return <p className="loading-message">Loading...</p>;
+}
 
-  if (error) return <p>{error}</p>;
+if (error) {
+  return <p className="error-message">{error}</p>;
+}
 
   return (
     <main>

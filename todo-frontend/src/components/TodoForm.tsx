@@ -62,7 +62,11 @@ export default function TodoForm({ onCreate }: TodoFormProps) {
     <form onSubmit={handleSubmit}>
       <h2>Add a new todo</h2>
 
-      {error && <p role="alert">{error}</p>}
+     {error && (
+  <p className="error-message" role="alert">
+    {error}
+  </p>
+)}
 
       <div>
         <label htmlFor="title">Title</label>
